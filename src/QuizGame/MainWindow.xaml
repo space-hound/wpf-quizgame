@@ -1,0 +1,189 @@
+﻿<Window x:Class="QuizGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:custom="clr-namespace:QuizGame.CustomControls"
+        xmlns:chkconv="clr-namespace:QuizGame.Converter"
+        mc:Ignorable="d" ResizeMode="NoResize"
+        Title="QuizGame" Height="700" Width="700">
+    
+    <!-- "resurse" ale window-ului curent din namespace-ul QuizGame.Converter -->
+    <Window.Resources>
+        <!-- transforma din boolean in litera "T" pentru true si "F" pentru fals -->
+        <chkconv:CheckBoxCheckConverter x:Key="CheckBoxCheckConverter"/>
+        <chkconv:ColorConverter x:Key="ColorConverter"/>
+        <chkconv:MultiConverter x:Key="MultiConverter"/>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True">
+        <!-- meniul de sus -->
+        <Menu Height="30" 
+              FontSize="14" 
+              FontFamily="Consolas" 
+              DockPanel.Dock="Top">
+            <MenuItem Header="File" 
+                      MenuItem.Click="FileClickHandler" 
+                      Margin="10,7,0,0">
+                <MenuItem x:Name="LoadDb" 
+                          Header="Load"/>
+                <MenuItem x:Name="SaveAsDb" 
+                          Header="Save As"/>
+                <Separator/>
+                <MenuItem x:Name="Exit" 
+                          Header="Exit"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- SECTIUNEA DE JOS CU BUTOANE SI INDEXUL INTREBARII -->
+        <Grid Height="90" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- BUTONELE DE JOS ADD REMOVE START -->
+            <StackPanel Orientation="Horizontal" Grid.Column="0" ButtonBase.Click="BottomClick">
+                <Button x:Name="AddQuestion" Content="Add" 
+                        Margin="30,3,3,3"
+                        Style="{StaticResource BottomButton}">
+                    <!-- ma leg de textboxul intrebari, de proprietatea text , 
+                            specific de lungimea lui -->
+                    <!-- ma leg de listviewul raspunsuri, de proprietatea iteme , 
+                            specific de marimea ei -->
+                    <!-- daca ambele sunt zero butonul este dezactivat -->
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource MultiConverter}">
+                            <Binding ElementName="QuestionContent" Path="Text.Length" />
+                            <Binding ElementName="Answers" Path="Items.Count"  />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <Button x:Name="RemoveQuestion" 
+                        Content="Remove" 
+                        Margin="15,3"
+                        Style="{StaticResource BottomButton}"/>
+                <Button x:Name="SaveQuestion" 
+                        Content="Start" 
+                        Margin="3,3,30,3"
+                        Style="{StaticResource BottomButton}"/>
+            </StackPanel>
+            
+            <!-- INDEXUL INTREABRII -->
+            <StackPanel Grid.Column="2" 
+                        Orientation="Horizontal" 
+                        VerticalAlignment="Center" 
+                        HorizontalAlignment="Right">
+                <!-- event care detecteaza cand se schimba indexul intrebarii curtente -->
+                <custom:NumericControl x:Name="QuestionIndex" 
+                                       Margin="0,0,30,0"
+                                       PropertyChanged="OnNumberChanged"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- SECTIUNEA DIN MIJLOC -->
+        <DockPanel LastChildFill="True">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".3*"/>
+                    <RowDefinition Height=".5*"/>
+                    <RowDefinition Height=".2*"/>
+                </Grid.RowDefinitions>
+
+                <!-- SECTIUNEA CU CONTINUTUL INTREBARII -->
+                <Border BorderThickness="2" 
+                        BorderBrush="Black" 
+                        Grid.Row="0" 
+                        Margin="10,10,10,0">
+                    <TextBox x:Name="QuestionContent" 
+                             Style="{StaticResource AnswerContent}"/>
+                </Border>
+                
+                <!-- SECTIUNEA CU LISTA DE RASPUNSURI A INTREBARII CURENTE -->
+                <Border BorderThickness="2" 
+                        BorderBrush="Black" 
+                        Grid.Row="1" 
+                        Margin="10, 10, 10, 10">
+                    <ListView x:Name="Answers" 
+                              HorizontalContentAlignment="Stretch">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width=".9*"/>
+                                        <ColumnDefinition Width=".1*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- ma leg la textul din textboxul de jos  de "Answer"-ul 
+                                        curent din lista observabila data ca sursa la ListView -->
+                                    <TextBlock MaxWidth="544" 
+                                               Grid.Column="0" 
+                                               Text="{Binding Content}" 
+                                               Style="{StaticResource AnswerBlock}"/>
+                                    <!-- ma leg la proprietatea "Answer"-ulu curent din lista
+                                        observabila data ca sursa la listview si in functie
+                                        daca acesta este true sau false definesc textul
+                                        din textboxul de mai jos be baza a doua convertoare
+                                        unul care insereaza textul "T" sau "F" si altul
+                                        care coloreaza litera cu rosu sau verde -->
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding IsTrue, Converter={StaticResource CheckBoxCheckConverter}}" 
+                                               Foreground="{Binding IsTrue, Converter={StaticResource ColorConverter}}" 
+                                               Style="{StaticResource CorrectBlock}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
+                
+                <!-- SECTIUNEA UNDE ADAUGI RASPUNS -->
+                <Grid Grid.Row="2" Margin="10,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".7*"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- TEXTBOXUL RESPONSABIL CU CONTINUTUL RASPUNSULUI -->
+                    <Border Grid.Column="0" BorderThickness="3" BorderBrush="Black">
+                        <TextBox x:Name="AnswerContent" 
+                                 Style="{StaticResource AnswerContent}"/>
+                    </Border>
+                    
+                    <!-- starea raspunsului adevarata sau falsa -->
+                    <CheckBox Grid.Column="1" 
+                              Style="{StaticResource TrueAnswer}"
+                              x:Name="AnswerState">
+                        <!-- SCALAREA CHECKBOXULUI CU 30% sa fie mai mare -->
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="1.3" ScaleY="1.3"/>
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>
+                    
+                    <!-- SECTIUNEA CU BUTOANE DIN SECTIUNEA DE RASPUNSURI -->
+                    <StackPanel Orientation="Vertical" 
+                                Grid.Column="2" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Center" 
+                                Margin="10,0">
+                        <!-- adauga un raspuns este enabled doar daca exista 
+                                continut in casuta de text a raspunsului -->
+                        <Button  IsEnabled="{Binding Text.Length, ElementName=AnswerContent}" 
+                                 Style="{StaticResource AddAnswer}" 
+                                 x:Name="AddAnswer"  
+                                 Content="Add Ans" 
+                                 Click="AddAnswerClick" 
+                                 Margin="0,0,0,6"/>
+                        <!-- sterge raspunsul selectat, enabled doar daca
+                                lista de raspunsuri nu este goala -->
+                        <Button  IsEnabled="{Binding Items.Count, ElementName=Answers}" 
+                                 Style="{StaticResource AddAnswer}" 
+                                 x:Name="DeleteAnsewer" 
+                                 Content="Delete Ans" 
+                                 Click="RemoveAnswerClick"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </DockPanel>
+</Window>
