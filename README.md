@@ -1,20 +1,30 @@
 # wpf-quizgame
-a simple wpf quiz maker and game - this or the calculator may be the first app, maybe-ish?
 
-</br>
-</br>
+This is the first thing I have done in `C#` using `Windows Presentation Foundation`. It is supposed to be a quiz creator app. Where you can create and export quizzes in JSON format, or import the. And you can take the quizzes, and it will tell you your score.
 
----
+ - It uses JSON files to save/load data. ([Newtonsoft](https://www.newtonsoft.com/json))
+ - It has 1 [Custom Controls](https://github.com/space-hound/wpf-quizgame/tree/master/src/QuizGame/CustomControls).
+ - It has some [Resources](https://github.com/space-hound/wpf-quizgame/tree/master/src/QuizGame/Styles).
+ - It has 3 [Converters](https://github.com/space-hound/wpf-quizgame/tree/master/src/QuizGame/Converter).
+ - It uses [OOP Principles](https://github.com/space-hound/wpf-quizgame/tree/master/src/QuizGame/Model). 
 
- ### code here
-  - [Looking for code?](src/QuizGame)
-  
-----
+<hr>
 
- ### pictures here
-  - [Looking for pics?](prev/)
+ - [Code Here!](https://github.com/space-hound/wpf-quizgame/tree/master/src/QuizGame)
+ - [Images Here!](https://github.com/space-hound/wpf-quizgame/tree/master/prev)
 
-</br>
-</br>
+<hr>
 
-`June 2018 - Visual Studio Community 2017 - .net version at that time`
+This is how it looks:
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/space-hound/wpf-quizgame/master/prev/quizgame-prev-3.png" alt="to do list">
+</p>
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/space-hound/wpf-quizgame/master/prev/quizgame-prev-5.gif" alt="to do list">
+</p>
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/space-hound/wpf-quizgame/master/prev/quizgame-prev-6.gif" alt="to do list">
+</p>
